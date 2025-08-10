@@ -1,0 +1,10 @@
+<div *ngIf="currentAlert">
+  <!-- 
+    [type]="currentAlert.type" binds the alert's color to the type from our service.
+    (closed)="onClose()" listens for the close event from the ng-bootstrap component
+    and calls our own onClose method.
+  -->
+  <ngb-alert [type]="currentAlert.type" (closed)="onClose()">
+    {{ currentAlert.message }}
+  </ngb-alert>
+</div>

@@ -1,0 +1,13 @@
+
+<div class="d-flex vh-100 overflow-hidden">
+  <!-- Sidebar Component -->
+  <app-sidebar (logoutRequest)="handleLogout()"></app-sidebar>
+
+  <div class="flex-grow-1 d-flex flex-column">
+    <app-navbar (logoutRequest)="handleLogout() "></app-navbar>
+
+    <main class="flex-grow-1 overflow-y-auto p-3">
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+</div>

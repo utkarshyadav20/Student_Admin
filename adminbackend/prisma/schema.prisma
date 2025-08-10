@@ -1,0 +1,85 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "rhel-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+
+model students {
+  email         String @id
+  name          String
+  mobile        String
+
+  course        String
+  courseRef     courses @relation("CourseToStudents", fields: [course], references: [course], onUpdate: Cascade)
+
+  city          String?
+  state         String?
+  country       String?
+  address       String?
+  about_student String?
+  image         Bytes? 
+
+  added_at      DateTime?
+  edited_at     DateTime?
+
+  @@index([email])
+  @@index([course])
+}
+
+model courses {
+  id        Int     @id @default(autoincrement())
+  course    String? @unique
+
+  isActive  Boolean?  @default(true)
+  added_at  DateTime?
+  edited_at DateTime?
+
+  students  students[] @relation("CourseToStudents") 
+
+  @@index([course])
+}
+
+
+
+model admins {
+  id       Int    @id @default(autoincrement())
+  email    String @unique
+  password String
+}
+
+
+model jwt_blacklist {
+  id          Int      @id @default(autoincrement())
+  jti         String   @unique
+  expires_at  DateTime
+}
+
+model tbl_countries {
+  id        Int        @id @default(autoincrement())
+  name      String     
+  phoneCode String
+  emojiU    String
+  native    String
+
+  TblStates tbl_states[] @relation("CountryStates")
+  @@index([name])
+
+}
+
+model tbl_states {
+  id        Int          @id @default(autoincrement())
+  name      String
+  stateCode String
+  countryId Int
+
+
+  Country   tbl_countries @relation("CountryStates", fields: [countryId], references: [id])
+  @@index([countryId])
+
+}
+

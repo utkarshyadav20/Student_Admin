@@ -1,0 +1,36 @@
+<div class="d-flex justify-content-between align-items-center mb-3 p-3 border-bottom bg-white">
+
+  <div class="d-flex flex-row gap-2 align-items-center">
+    <h3 class="cursor-pointer mb-0" (click)="navigate('/admin/dashboard')">
+      <lucide-icon name="house" size="27" strokeWidth="2.5"></lucide-icon>
+    </h3>
+    <ng-container *ngIf="(isCourseSection$ | async); else studentTitle">
+      <h3 class="cursor-pointer mb-0" (click)="navigate('/admin/courses')">Course Management</h3>
+    </ng-container>
+    <ng-template #studentTitle>
+      <h3 class="cursor-pointer mb-0" (click)="navigate('/admin/dashboard')">Student Management</h3>
+    </ng-template>
+  </div>
+
+  <div>
+    <ng-container *ngIf="(isCourseSection$ | async); else studentCount">
+      <button class="btn btn-outline-secondary me-2" disabled>
+        Total Courses: {{ dataService.courseCount$ | async }}
+      </button>
+    </ng-container>
+    <ng-template #studentCount>
+       <button class="btn btn-outline-secondary me-2" disabled>
+        Total Students: {{ dataService.studentCount$ | async }}
+      </button>
+    </ng-template>
+
+    <ng-container *ngIf="(isCourseSection$ | async); else addStudent">
+       <button class="btn btn-success me-2" (click)="navigate('/admin/courses/add')">Add Course</button>
+    </ng-container>
+    <ng-template #addStudent>
+       <button class="btn btn-success me-2" (click)="navigate('/admin/student-form')">Add Student</button>
+    </ng-template>
+    
+    <button class="btn btn-outline-secondary" (click)="onLogout()">Logout</button>
+  </div>
+</div>

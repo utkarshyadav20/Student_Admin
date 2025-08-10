@@ -1,0 +1,93 @@
+<div class="row mb-3">
+    <div class="col-md-12">
+        <input type="text" class="form-control" placeholder="Search by course..." [(ngModel)]="searchQuery"
+            (ngModelChange)="onSearchChange()" />
+    </div>
+
+    <div *ngIf="searchQuery" class="col-12 mt-2">
+        <strong>Filter Result:</strong>
+        <span class="badge bg-primary ms-2">{{ totalCourses }} courses found</span>
+    </div>
+</div>
+
+<app-alert></app-alert>
+<div *ngIf="isLoading" class="text-center p-5">
+    <div class="spinner-border" role="status">
+        <span class="visually-hidden">Loading...</span>
+    </div>
+</div>
+
+
+<div *ngIf="!isLoading" class="table-responsive">
+    <table class="table table-striped table-bordered table-hover align-middle">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>
+                    Course
+                    <!-- <button class="btn btn-light btn-sm ms-2 p-1" (click)="onSortClick()">
+                        <lucide-icon [name]="isSorted ? 'a-arrow-down' : 'a-arrow-up'" size="16"></lucide-icon>
+                    </button> -->
+                </th>
+                <th>Toggle</th>
+                <th>Added On</th>
+                <th>Edited On</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <tr *ngFor="let c of courses; let i = index">
+                <td>{{ (currentPage - 1) * itemsPerPage + i + 1 }}</td>
+                <td>
+                    <div class="d-flex align-items-center">
+                        <span>{{ c.course }}</span>
+                    </div>
+                </td>
+                <td>
+                    <div class="form-check form-switch">
+                        <input type="checkbox" class="form-check-input" role="switch" [checked]="c.isActive"
+                            (change)="toggleStatus(c)" />
+                    </div>
+                </td>
+                <td>
+                    <span>{{formatDate(c.added_at) }}</span>
+                </td>
+                <td>
+                    <span class="text-muted">{{formatDate(c.edited_at) }}</span>
+                </td>
+                <td>
+                    <button class="btn btn-link p-1 me-2" (click)="naivigateToEdit(c.course)">
+                        <lucide-icon name="pencil-line" size="18" class="text-primary"></lucide-icon>
+                    </button>
+                    <button class="btn btn-link p-1" (click)="openDeleteModal(deleteModal, c)">
+                        <lucide-icon name="trash-2" size="18" class="text-danger"></lucide-icon>
+                    </button>
+                </td>
+            </tr>
+            <tr *ngIf="courses.length === 0">
+                <td colspan="6" class="text-center text-muted">No students found.</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<div *ngIf="!isLoading && totalPages > 1" class="d-flex justify-content-center mt-3">
+    <ngb-pagination [collectionSize]="totalCourses" [(page)]="currentPage" [pageSize]="itemsPerPage" [maxSize]="5"
+        [rotate]="true" [boundaryLinks]="true" (pageChange)="onPageChange($event)">
+    </ngb-pagination>
+</div>
+
+<ng-template #deleteModal let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title">Confirm Deletion</h4>
+        <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+        <p>Are you sure you want to delete <strong>{{ courseToDelete?.course}}</strong>?</p>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="modal.dismiss('cancel click')">Cancel</button>
+        <button type="button" class="btn btn-danger" (click)="modal.close('delete')">Delete</button>
+    </div>
+</ng-template>
